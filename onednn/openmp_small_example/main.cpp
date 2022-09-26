@@ -200,6 +200,8 @@ int main(int argc, char **argv)
         {DNNL_ARG_DIFF_DST, net_dst_bwd_mem},
         {DNNL_ARG_DIFF_SRC, net_dst_bwd_mem}
     });
+    // NOTE: Here is where I found information about which arguments to use
+    // https://github.com/oneapi-src/oneDNN/blob/master/src/cpu/ref_softmax.cpp#L338
 
     LOG("Setting up backward desc and primitive_desc inner product on the weights");
     auto fc_bwd_d = dnnl::inner_product_backward_weights::desc(
