@@ -1,4 +1,4 @@
-.PHONY: build-all build-ubuntu2204 run-ubuntu2204
+.PHONY: build-all build-ubuntu2204 run-ubuntu2204 dl-data
 
 build-all: build-ubuntu2204
 
@@ -24,3 +24,13 @@ run-ubuntu2204:
 	           --rm -it                  \
 	           -v $(PWD):/mnt:ro         \
 	           $(IMAGE)
+
+dl-data:
+	$(eval DATADIR := _data)
+	$(eval MNISTFILES := train-images-idx3-ubyte.gz train-labels-idx1-ubyte.gz t10k-images-idx3-ubyte.gz t10k-labels-idx1-ubyte.gz)
+	mkdir -p $(DATADIR)
+	@for f in $(MNISTFILES); do \
+	  echo Downloading $$f; \
+	  curl -L -o $(DATADIR)/$$f http://yann.lecun.com/exdb/mnist/$$f; \
+	  gunzip $(DATADIR)/$$f; \
+	done

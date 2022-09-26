@@ -1,21 +1,24 @@
-.PHONY: all
+.PHONY: all clean
 
-BUILD-DIR=/tmp/build
+BUILD-DIR=/tmp/dnnbuild
 
-SOURCE-DIRS=$(shell find . -mindepth 1 -type d -exec basename \{} \;)
+SOURCE-DIRS=$(shell find . -mindepth 1 -type d -not -name '_*' -exec basename \{} \;)
 
 CXX = g++
-CXXFLAGS = -ldnnl -Wall -O2
+CXXFLAGS = -ldnnl -Wall --std=c++17 -O2
 
-all:
-	echo "TODO"
-	echo $(SOURCE-DIRS)
+all: $(foreach d, $(SOURCE-DIRS), $(d).compile)
 
-%.compile:
-	$(eval SRC-FILES := $(shell ls $*/*.cpp))
+%.compile: FORCE
+	$(eval SRC-FILES := $(shell ls $*/*.cpp _utils/*.cpp))
 	$(eval OUTFILE := $(BUILD-DIR)/$*)
 	mkdir -p $(BUILD-DIR)
 	$(CXX) $(SRC-FILES) $(CXXFLAGS) -o $(OUTFILE)
+
+%/: FORCE
+	make $*.compile
+
+FORCE:
 
 clean:
 	rm -rf $(BUILD-DIR)
