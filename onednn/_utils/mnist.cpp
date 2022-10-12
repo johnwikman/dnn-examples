@@ -115,17 +115,36 @@ void mnist::t10k_copydata(mnist::size_type start, mnist::size_type end, float *d
     generic_copydata(start, end, dst, m_t10k_data);
 }
 
+static inline void generic_copylabels(mnist::size_type start, mnist::size_type end, uint8_t *dst, const std::byte *labels)
+{
+    const mnist::size_type len = end - start;
+    const mnist::size_type offset = 8;
+    for (mnist::size_type i = 0; i < len; ++i)
+        dst[i] = (uint8_t) labels[offset + start + i];
+}
+
+void mnist::train_copylabels(size_type start, size_type end, uint8_t *dst) const
+{
+    generic_copylabels(start, end, dst, m_train_labels);
+}
+
+void mnist::t10k_copylabels(size_type start, size_type end, uint8_t *dst) const
+{
+    generic_copylabels(start, end, dst, m_t10k_labels);
+}
+
 static inline void generic_copylabels_1hot(mnist::size_type start, mnist::size_type end, float *dst, const std::byte *labels)
 {
     const mnist::size_type len = end - start;
+    const mnist::size_type offset = 8;
     const mnist::size_type stride = 10;
 
     // Zero out the array first
-    std::memset(dst, 0, len * 10 * sizeof(float));
+    std::memset(dst, 0, len * stride * sizeof(float));
 
     //
     for (mnist::size_type i = 0; i < len; ++i)
-        dst[(i * stride) + (mnist::size_type) labels[start + i]] = 1.0f;
+        dst[(i * stride) + (mnist::size_type) labels[offset + start + i]] = 1.0f;
 }
 
 void mnist::train_copylabels_1hot(mnist::size_type start, mnist::size_type end, float *dst) const
@@ -135,7 +154,7 @@ void mnist::train_copylabels_1hot(mnist::size_type start, mnist::size_type end, 
 
 void mnist::t10k_copylabels_1hot(mnist::size_type start, mnist::size_type end, float *dst) const
 {
-    generic_copylabels_1hot(start, end, dst, m_train_labels);
+    generic_copylabels_1hot(start, end, dst, m_t10k_labels);
 }
 
 

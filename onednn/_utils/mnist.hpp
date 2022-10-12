@@ -28,6 +28,9 @@ public:
     void train_copydata(size_type start, size_type end, float *dst) const;
     void t10k_copydata(size_type start, size_type end, float *dst) const;
 
+    void train_copylabels(size_type start, size_type end, uint8_t *dst) const;
+    void t10k_copylabels(size_type start, size_type end, uint8_t *dst) const;
+
     void train_copylabels_1hot(size_type start, size_type end, float *dst) const;
     void t10k_copylabels_1hot(size_type start, size_type end, float *dst) const;
 private:
